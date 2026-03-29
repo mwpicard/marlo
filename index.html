@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marlo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d0b1a;
+            --bg-card: #1a1730;
+            --bg-card-hover: #231f42;
+            --purple-deep: #2d1b69;
+            --purple-mid: #6c3ce0;
+            --purple-light: #a78bfa;
+            --neon-green: #39ff7f;
+            --neon-blue: #00d4ff;
+            --neon-pink: #ff3cac;
+            --neon-orange: #ff9a3c;
+            --text-main: #e8e2f8;
+            --text-dim: #9990b8;
+            --gradient-1: linear-gradient(135deg, #6c3ce0, #00d4ff);
+            --gradient-2: linear-gradient(135deg, #ff3cac, #ff9a3c);
+            --gradient-3: linear-gradient(135deg, #39ff7f, #00d4ff);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float-up linear infinite;
+            opacity: 0.15;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.15; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Grid pattern overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(108, 60, 224, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(108, 60, 224, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 6px;
+            z-index: 100;
+            background: var(--bg-card);
+            padding: 6px;
+            border-radius: 30px;
+            border: 1px solid rgba(108, 60, 224, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            background: var(--purple-mid);
+            color: white;
+            box-shadow: 0 0 15px rgba(108, 60, 224, 0.5);
+        }
+        .lang-btn:hover:not(.active) { color: var(--text-main); }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 0 40px;
+        }
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            position: relative;
+            z-index: 2;
+            animation: pulse-glow 3s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(108, 60, 224, 0.4);
+            overflow: hidden;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 40px rgba(108, 60, 224, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(108, 60, 224, 0.7), 0 0 100px rgba(0, 212, 255, 0.2); }
+        }
+        .avatar-ring {
+            position: absolute;
+            top: -8px; left: -8px;
+            width: 166px; height: 166px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--neon-green);
+            border-right-color: var(--neon-blue);
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .hero h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .hero .tagline {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+        .hero .location {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--neon-orange);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        .hero .age-badge {
+            display: inline-block;
+            margin-top: 15px;
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 60, 224, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            color: var(--purple-light);
+        }
+
+        /* Languages spoken */
+        .languages {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .lang-tag {
+            background: rgba(108, 60, 224, 0.15);
+            border: 1px solid rgba(108, 60, 224, 0.3);
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--purple-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title .icon {
+            font-size: 1.5rem;
+        }
+        .section-title .line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(108, 60, 224, 0.5), transparent);
+            border-radius: 2px;
+        }
+
+        /* Interests Grid */
+        .interests-section { margin-top: 50px; }
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .interest-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 60, 224, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .interest-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            border-radius: 16px 16px 0 0;
+        }
+        .interest-card:nth-child(1)::before { background: var(--gradient-1); }
+        .interest-card:nth-child(2)::before { background: var(--gradient-2); }
+        .interest-card:nth-child(3)::before { background: var(--gradient-3); }
+        .interest-card:nth-child(4)::before { background: linear-gradient(135deg, #ff9a3c, #ff3cac); }
+        .interest-card:nth-child(5)::before { background: linear-gradient(135deg, #00d4ff, #6c3ce0); }
+        .interest-card:nth-child(6)::before { background: linear-gradient(135deg, #39ff7f, #6c3ce0); }
+
+        .interest-card:hover {
+            transform: translateY(-6px);
+            background: var(--bg-card-hover);
+            border-color: rgba(108, 60, 224, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .interest-card .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .interest-card h3 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+        .interest-card p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* About section */
+        .about-section { margin-top: 50px; }
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 60, 224, 0.15);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+        .about-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(108, 60, 224, 0.08), transparent 70%);
+            pointer-events: none;
+        }
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            position: relative;
+            z-index: 1;
+        }
+        .about-text .highlight {
+            color: var(--purple-light);
+            font-weight: 600;
+        }
+
+        /* Fun Facts */
+        .facts-section { margin-top: 50px; }
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .fact-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 60, 224, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .fact-card:hover {
+            border-color: rgba(108, 60, 224, 0.4);
+            transform: translateY(-4px);
+        }
+        .fact-number {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .fact-label {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 50px 0 30px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+        .footer .made-with {
+            margin-bottom: 8px;
+        }
+        .footer .wave {
+            display: inline-block;
+            animation: wave 2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Chess animation mini-game */
+        .chess-piece {
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        .chess-piece:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.2rem; }
+            .facts-grid { grid-template-columns: 1fr; }
+            .interests-grid { grid-template-columns: 1fr; }
+            .lang-switcher { top: 10px; right: 10px; }
+            .container { padding: 15px; }
+        }
+
+        /* Typing effect for tagline */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: var(--purple-light);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-particles" id="particles"></div>
+<div class="grid-overlay"></div>
+
+<!-- Language Switcher -->
+<div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('ca')">CA</button>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="avatar-container">
+            <div class="avatar"><img src="images/marlo with mask.png" alt="Marlo"></div>
+            <div class="avatar-ring"></div>
+        </div>
+        <h1>Marlo</h1>
+        <div class="tagline">
+            <span data-en="9 years old &amp; exploring the world" data-es="9 a&ntilde;os y explorando el mundo" data-ca="9 anys i explorant el m&oacute;n"></span>
+            <span class="typing-cursor"></span>
+        </div>
+        <div class="location">
+            &#128205; <span data-en="Near Barcelona, Spain" data-es="Cerca de Barcelona, Espa&ntilde;a" data-ca="A prop de Barcelona, Espanya"></span>
+        </div>
+        <div class="age-badge">
+            &#127775; <span data-en="Thinker &bull; Gamer &bull; Chef in training" data-es="Pensador &bull; Gamer &bull; Chef en formaci&oacute;n" data-ca="Pensador &bull; Gamer &bull; Xef en formaci&oacute;"></span>
+        </div>
+        <div class="languages">
+            <span class="lang-tag">&#127468;&#127463; English</span>
+            <span class="lang-tag">&#127466;&#127480; Espa&ntilde;ol</span>
+            <span class="lang-tag">&#127988;&#917603;&#917621;&#917619;&#917603;&#917620;&#917631; Catal&agrave;</span>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="about-section fade-in">
+        <div class="section-title">
+            <span class="icon">&#128640;</span>
+            <span data-en="About Me" data-es="Sobre M&iacute;" data-ca="Sobre Mi"></span>
+            <span class="line"></span>
+        </div>
+        <div class="about-card">
+            <p class="about-text" data-en="Hey! I'm <span class='highlight'>Marlo</span> &mdash; a quiet thinker who loves figuring things out. I live near Barcelona where the sun is almost always shining. When I'm not building epic worlds in Roblox or scoring goals with my friends, you'll find me in the kitchen cooking up something tasty, solving math puzzles, or planning my next chess move. I speak <span class='highlight'>three languages</span> and I'm always up for a good challenge."
+            data-es="&iexcl;Hola! Soy <span class='highlight'>Marlo</span> &mdash; un pensador tranquilo al que le encanta descubrir c&oacute;mo funcionan las cosas. Vivo cerca de Barcelona donde el sol casi siempre brilla. Cuando no estoy construyendo mundos &eacute;picos en Roblox o metiendo goles con mis amigos, me encontrar&aacute;s en la cocina preparando algo rico, resolviendo problemas de matem&aacute;ticas o planeando mi siguiente jugada de ajedrez. Hablo <span class='highlight'>tres idiomas</span> y siempre estoy listo para un buen desaf&iacute;o."
+            data-ca="Hola! S&oacute;c en <span class='highlight'>Marlo</span> &mdash; un pensador tranquil que li encanta descobrir com funcionen les coses. Visc a prop de Barcelona on el sol gaireb&eacute; sempre brilla. Quan no estic construint mons &egrave;pics a Roblox o marcant gols amb els meus amics, em trobareu a la cuina preparant alguna cosa bona, resolent problemes de matem&agrave;tiques o planificant la meva seg&uuml;ent jugada d'escacs. Parlo <span class='highlight'>tres idiomes</span> i sempre estic preparat per a un bon repte.">
+            </p>
+        </div>
+    </section>
+
+    <!-- Interests -->
+    <section class="interests-section fade-in">
+        <div class="section-title">
+            <span class="icon">&#9889;</span>
+            <span data-en="My Interests" data-es="Mis Intereses" data-ca="Els Meus Interessos"></span>
+            <span class="line"></span>
+        </div>
+        <div class="interests-grid">
+            <div class="interest-card fade-in">
+                <span class="emoji">&#127918;</span>
+                <h3>Roblox</h3>
+                <p data-en="Building worlds, playing with friends, and always looking for the next great game." data-es="Construyendo mundos, jugando con amigos y siempre buscando el pr&oacute;ximo gran juego." data-ca="Construint mons, jugant amb amics i sempre buscant el pr&ograve;xim gran joc."></p>
+            </div>
+            <div class="interest-card fade-in">
+                <span class="emoji">&#9917;</span>
+                <h3 data-en="Football" data-es="F&uacute;tbol" data-ca="Futbol"></h3>
+                <p data-en="Nothing beats a great match with friends. The pitch is where the fun happens." data-es="Nada supera un buen partido con amigos. El campo es donde pasa la diversi&oacute;n." data-ca="Res supera un bon partit amb amics. El camp &eacute;s on passa la diversi&oacute;."></p>
+            </div>
+            <div class="interest-card fade-in">
+                <span class="emoji">&#129379;</span>
+                <h3 data-en="Cooking" data-es="Cocina" data-ca="Cuina"></h3>
+                <p data-en="I love experimenting in the kitchen. Making something delicious from scratch is the best." data-es="Me encanta experimentar en la cocina. Hacer algo delicioso desde cero es lo mejor." data-ca="M'encanta experimentar a la cuina. Fer alguna cosa deliciosa des de zero &eacute;s el millor."></p>
+            </div>
+            <div class="interest-card fade-in">
+                <span class="emoji">&#129309;</span>
+                <h3 data-en="Friends" data-es="Amigos" data-ca="Amics"></h3>
+                <p data-en="My crew is everything. Gaming, football, or just hanging out &mdash; it's always better together." data-es="Mi grupo lo es todo. Juegos, f&uacute;tbol o simplemente pasar el rato &mdash; siempre es mejor juntos." data-ca="El meu grup ho &eacute;s tot. Jocs, futbol o simplement passar l'estona &mdash; sempre &eacute;s millor junts."></p>
+            </div>
+            <div class="interest-card fade-in">
+                <span class="emoji">&#129518;</span>
+                <h3 data-en="Math" data-es="Matem&aacute;ticas" data-ca="Matem&agrave;tiques"></h3>
+                <p data-en="Numbers, patterns, and puzzles &mdash; I love the challenge of cracking a tough problem." data-es="N&uacute;meros, patrones y puzzles &mdash; me encanta el desaf&iacute;o de resolver un problema dif&iacute;cil." data-ca="N&uacute;meros, patrons i trencaclosques &mdash; m'encanta el repte de resoldre un problema dif&iacute;cil."></p>
+            </div>
+            <div class="interest-card fade-in">
+                <span class="emoji">&#9823;</span>
+                <h3 data-en="Chess" data-es="Ajedrez" data-ca="Escacs"></h3>
+                <p data-en="Strategy, patience, and outsmarting your opponent. Every game is a new puzzle." data-es="Estrategia, paciencia y superar a tu oponente. Cada partida es un nuevo puzzle." data-ca="Estrat&egrave;gia, paci&egrave;ncia i superar el teu oponent. Cada partida &eacute;s un nou trencaclosques."></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fun Facts -->
+    <section class="facts-section fade-in">
+        <div class="section-title">
+            <span class="icon">&#128202;</span>
+            <span data-en="Quick Stats" data-es="Datos R&aacute;pidos" data-ca="Dades R&agrave;pides"></span>
+            <span class="line"></span>
+        </div>
+        <div class="facts-grid">
+            <div class="fact-card">
+                <div class="fact-number">3</div>
+                <div class="fact-label" data-en="Languages Spoken" data-es="Idiomas Hablados" data-ca="Idiomes Parlats"></div>
+            </div>
+            <div class="fact-card">
+                <div class="fact-number">6</div>
+                <div class="fact-label" data-en="Big Interests" data-es="Grandes Intereses" data-ca="Grans Interessos"></div>
+            </div>
+            <div class="fact-card">
+                <div class="fact-number">&infin;</div>
+                <div class="fact-label" data-en="Curiosity Level" data-es="Nivel de Curiosidad" data-ca="Nivell de Curiositat"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="made-with">
+            <span data-en="Made with" data-es="Hecho con" data-ca="Fet amb"></span> &#128156;
+            <span data-en="by Marlo" data-es="por Marlo" data-ca="per en Marlo"></span>
+            <span class="wave">&#128075;</span>
+        </div>
+        <div>&copy; 2026 Marlo</div>
+    </footer>
+
+</div>
+
+<script>
+    // Create floating particles
+    const particlesContainer = document.getElementById('particles');
+    const colors = ['#6c3ce0', '#00d4ff', '#39ff7f', '#ff3cac', '#ff9a3c'];
+    for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        const size = Math.random() * 8 + 3;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+        particle.style.animationDelay = (Math.random() * 10) + 's';
+        particlesContainer.appendChild(particle);
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Multi-language support
+    let currentLang = 'en';
+
+    function setLang(lang) {
+        currentLang = lang;
+        document.documentElement.setAttribute('data-lang', lang);
+
+        // Update active button
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent.trim() === lang.toUpperCase());
+        });
+
+        // Update all translatable elements
+        document.querySelectorAll('[data-en]').forEach(el => {
+            const text = el.getAttribute('data-' + lang);
+            if (text) {
+                if (el.tagName === 'P' || el.classList.contains('about-text')) {
+                    el.innerHTML = text;
+                } else {
+                    el.innerHTML = text;
+                }
+            }
+        });
+    }
+
+    // Initialize with English
+    setLang('en');
+
+    // Fun: konami code easter egg
+    let konamiCode = [];
+    const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    document.addEventListener('keydown', (e) => {
+        konamiCode.push(e.keyCode);
+        if (konamiCode.length > konamiSequence.length) konamiCode.shift();
+        if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+            document.body.style.transition = 'filter 0.5s';
+            document.body.style.filter = 'hue-rotate(180deg)';
+            setTimeout(() => { document.body.style.filter = 'none'; }, 3000);
+        }
+    });
+
+    // Card tilt effect on mouse move
+    document.querySelectorAll('.interest-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            card.style.transform = `translateY(-6px) perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+</script>
+
+</body>
+</html>
